@@ -1,17 +1,11 @@
 package com.example;
 
-import ch.qos.logback.classic.AsyncAppender;
-import ch.qos.logback.classic.LoggerContext;
-import net.logstash.logback.appender.LogstashSocketAppender;
-import net.logstash.logback.stacktrace.ShortenedThrowableConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 @Configuration
@@ -20,7 +14,15 @@ public class LoggingConfiguration implements ApplicationListener<ContextRefreshe
     private final Logger log = LoggerFactory.getLogger(LoggingConfiguration.class);
 
     private JHipsterProperties properties;
+
     private LogstashConfigurator logstashConfigurator;
+
+    private LogbackLoggerContextListener contextListener;
+
+    @Inject
+    public void setProperties(JHipsterProperties properties) {
+        this.properties = properties;
+    }
 
     @Inject
     public void setLogstashConfigurator(LogstashConfigurator logstashConfigurator) {
@@ -28,15 +30,12 @@ public class LoggingConfiguration implements ApplicationListener<ContextRefreshe
     }
 
     @Inject
-    public void setProperties(JHipsterProperties properties) {
-        this.properties = properties;
+    public void setContextListener(LogbackLoggerContextListener contextListener) {
+        this.contextListener = contextListener;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        if (properties.getLogging().getLogstash().isEnabled()) {
-            logstashConfigurator.addLogstashAppender();
-            log.info("Added Logstash Appender");
-        }
+        contextListener.register();
     }
 }

@@ -1,9 +1,7 @@
 package com.example;
 
 import ch.qos.logback.classic.AsyncAppender;
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggerContextListener;
 import net.logstash.logback.appender.LogstashSocketAppender;
 import net.logstash.logback.stacktrace.ShortenedThrowableConverter;
 import org.slf4j.Logger;
@@ -15,10 +13,7 @@ import javax.inject.Inject;
 
 @Component
 public class LogstashConfigurator {
-    public static final String MY_LISTENER = "MyListener";
     private final Logger log = LoggerFactory.getLogger(LoggingConfiguration.class);
-
-    private LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     @Value("${spring.application.name}")
     private String appName;
@@ -37,7 +32,7 @@ public class LogstashConfigurator {
     }
 
 
-    public void addLogstashAppender() {
+    public void addLogstashAppender(LoggerContext context) {
         log.info("Initializing Logstash logging");
 
         LogstashSocketAppender logstashAppender = new LogstashSocketAppender();
@@ -70,41 +65,6 @@ public class LogstashConfigurator {
         asyncLogstashAppender.start();
 
         context.getLogger("ROOT").addAppender(asyncLogstashAppender);
-
-        /*
-        context.addListener(new LoggerContextListener() {
-
-            @Override
-            public boolean isResetResistant() {
-                return true;
-            }
-
-            private Logger getLogger(LoggerContext context) {
-                return context.getLogger(MY_LISTENER);
-            }
-
-            @Override
-            public void onStart(LoggerContext context) {
-                getLogger(context).info("onStart");
-            }
-
-            @Override
-            public void onReset(LoggerContext context) {
-                getLogger(context).info("onReset");
-            }
-
-            @Override
-            public void onStop(LoggerContext context) {
-                getLogger(context).info("onStop");
-            }
-
-            @Override
-            public void onLevelChange(ch.qos.logback.classic.Logger logger, Level level) {
-                getLogger(context).info("onLevelChange");
-            }
-        });
-
-        */
     }
 
 }
