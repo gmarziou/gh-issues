@@ -1,0 +1,10 @@
+spring.application.name: test
+server.port: 8080
+eureka.instance.instanceId: 1234
+
+jhipster:
+  logging:
+    logstash:
+      enabled: true
+      host: t-smart-elk-int
+      port: 5000
