@@ -9,7 +9,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import javax.inject.Inject;
 
 @Configuration
-public class LoggingConfiguration implements ApplicationListener<ContextRefreshedEvent> {
+public class LoggingConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(LoggingConfiguration.class);
 
@@ -34,8 +34,4 @@ public class LoggingConfiguration implements ApplicationListener<ContextRefreshe
         this.contextListener = contextListener;
     }
 
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-        contextListener.register();
-    }
 }
